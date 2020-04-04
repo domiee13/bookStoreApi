@@ -1,6 +1,11 @@
+require('dotenv').config();
+
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
+
+var User = require('./models/user.model');
 
 var app = express();
 
@@ -20,7 +25,22 @@ app.use('/register', registerRoute);
 app.use('/login', loginRoute);
 
 app.get('/',function(req,res){
-    res.send("Hello motherfucker");
+    console.log(req.headers);
+    var decode = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY);
+    User.findOne({
+        _id: decode._id
+    })
+    .then(user=>{
+        if(user){
+            res.json(user);
+        }
+        else{
+            res.redirect('/login');
+        }
+    })
+    .catch(err=>{
+        res.send("Error: "+ err);
+    })
 });
 
 app.listen(port,function(req,res){

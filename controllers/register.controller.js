@@ -1,6 +1,7 @@
 var User = require('../models/user.model');
 
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
 
 module.exports.postRegister = function(req,res){
     const newUser = {
