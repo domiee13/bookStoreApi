@@ -8,6 +8,7 @@ var port = 5000;
 
 var apiProductRoute = require('./api/routes/product.route');
 var registerRoute = require('./routes/register.route');
+var loginRoute = require('./routes/login.route');
 
 mongoose.connect('mongodb://localhost/bookStore');
 
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api/products', apiProductRoute);
 app.use('/register', registerRoute);
+app.use('/login', loginRoute);
 
 app.get('/',function(req,res){
     res.send("Hello motherfucker");

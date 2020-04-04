@@ -1,5 +1,7 @@
 var User = require('../models/user.model');
 
+var bcrypt = require('bcrypt');
+
 module.exports.postRegister = function(req,res){
     const newUser = {
         name: req.body.name,
@@ -14,12 +16,15 @@ module.exports.postRegister = function(req,res){
     })
     .then(user=>{
         if(!user){
-            User.create(newUser).then(user=>{
-                res.json({status: user.email + " registed!"});
-            })
-            .catch(err=>{
-                res.send('error: ' + err);
-            })
+            bcrypt.hash(req.body.password,10,(err,hash)=>{
+                newUser.password = hash;
+                User.create(newUser).then(user=>{
+                    res.json({status: user.email + " registed!"});
+                })
+                .catch(err=>{
+                    res.send('error: ' + err);
+                })    
+            });
         }
         else{
             res.json({error: 'User already exist.'})
